@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>GlideGo | Premium Bus Travel Booking</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+        }
+
+        body {
+            background: radial-gradient(circle at 10% 20%, #0b1120, #030614);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem 1rem;
+        }
+
+        /* Glassmorphic main container */
+        .booking-container {
+            max-width: 1400px;
+            width: 100%;
+            background: rgba(15, 25, 45, 0.55);
+            backdrop-filter: blur(14px);
+            border-radius: 3rem;
+            border: 1px solid rgba(80, 180, 255, 0.2);
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.03);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        /* header with modern wave and glow */
+        .hero-header {
+            background: linear-gradient(135deg, #071a2e, #010a14);
+            padding: 2rem 2rem 1.8rem 2rem;
+            position: relative;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .hero-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00c6ff, #66f0ff, #00c6ff, transparent);
+        }
+
+        .brand {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(120deg, #fff, #7ff9ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .logo p {
+            color: #8aa9d6;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+        }
+
+        .tagline {
+            background: rgba(0, 255, 255, 0.1);
+            padding: 0.4rem 1.2rem;
+            border-radius: 50px;
+            backdrop-filter: blur(4px);
+            color: #b5f0ff;
+            font-weight: 500;
+            font-size: 0.85rem;
+            border: 1px solid rgba(0, 200, 255, 0.3);
+        }
+
+        /* search panel */
+        .search-panel {
+            background: rgba(8, 18, 28, 0.7);
+            margin: 1.5rem 2rem 2rem 2rem;
+            border-radius: 2rem;
+            padding: 1.5rem;
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(72, 187, 255, 0.2);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .input-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.2rem;
+            align-items: flex-end;
+        }
+
+        .field {
+            flex: 1;
+            min-width: 140px;
+        }
+
+        .field label {
+            display: block;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+            color: #9bbde2;
+            margin-bottom: 0.5rem;
+        }
+
+        .field input, .field select {
+            width: 100%;
+            background: #0f1a24;
+            border: 1px solid #2a4258;
+            padding: 0.9rem 1rem;
+            border-radius: 1.5rem;
+            color: white;
+            font-weight: 500;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .field input:focus, .field select:focus {
+            border-color: #2bd4ff;
+            box-shadow: 0 0 12px rgba(43, 212, 255, 0.3);
+        }
+
+        .search-btn {
+            background: linear-gradient(105deg, #0e6b8f, #00b4d8);
+            border: none;
+            padding: 0.9rem 2rem;
+            border-radius: 2rem;
+            font-weight: bold;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 4px 12px rgba(0, 180, 216, 0.3);
+        }
+
+        .search-btn:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(105deg, #1087b0, #00c8ff);
+            box-shadow: 0 12px 22px rgba(0, 180, 216, 0.4);
+        }
+
+        /* results + booking section */
+        .results-section {
+            margin: 0 2rem 2rem 2rem;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .section-title h2 {
+            color: #eef5ff;
+            font-weight: 600;
+            font-size: 1.5rem;
+            letter-spacing: -0.3px;
+            border-left: 4px solid #2bd4ff;
+            padding-left: 1rem;
+        }
+
+        .bus-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 0.8rem;
+        }
+
+        .bus-card {
+            background: linear-gradient(145deg, #111e2a, #0a121e);
+            border-radius: 1.8rem;
+            padding: 1.2rem;
+            border: 1px solid rgba(43, 212, 255, 0.25);
+            transition: all 0.25s ease;
+            cursor: pointer;
+            backdrop-filter: blur(4px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bus-card:hover {
+            transform: translateY(-6px);
+            border-color: #2bd4ff;
+            box-shadow: 0 18px 30px -10px rgba(0, 200, 255, 0.2);
+        }
+
+        .bus-card.selected {
+            background: linear-gradient(145deg, #102a38, #07141f);
+            border: 1.5px solid #2bd4ff;
+            box-shadow: 0 0 0 2px rgba(43, 212, 255, 0.3);
+        }
+
+        .bus-route {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: #caf0ff;
+            margin-bottom: 1rem;
+        }
+
+        .route-arrow {
+            color: #2bd4ff;
+            font-size: 1.1rem;
+        }
+
+        .bus-details {
+            display: flex;
+            justify-content: space-between;
+            margin: 0.8rem 0;
+            font-size: 0.85rem;
+            color: #aac8e6;
+        }
+
+        .fare {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #ffea9e;
+            margin: 0.5rem 0;
+        }
+
+        .seat-info {
+            font-size: 0.75rem;
+            background: #0f1f2c;
+            display: inline-block;
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+            color: #8bcbff;
+        }
+
+        .select-badge {
+            margin-top: 1rem;
+            text-align: right;
+            font-size: 0.7rem;
+            font-weight: bold;
+            color: #2bd4ff;
+        }
+
+        /* booking summary */
+        .booking-summary {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 1.8rem;
+            margin-top: 2.5rem;
+            padding: 1.6rem;
+            border: 1px solid rgba(43, 212, 255, 0.4);
+            backdrop-filter: blur(10px);
+        }
+
+        .summary-flex {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .selected-info {
+            flex: 3;
+        }
+
+        .selected-info p {
+            color: #cce7ff;
+        }
+
+        .selected-info strong {
+            color: white;
+        }
+
+        .passenger-control {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: #0d1922;
+            padding: 0.5rem 1.2rem;
+            border-radius: 3rem;
+        }
+
+        .passenger-control button {
+            background: #1f3e4f;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.1s;
+        }
+
+        .passenger-control button:active {
+            transform: scale(0.95);
+        }
+
+        .passenger-control span {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #fff;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .book-btn {
+            background: linear-gradient(105deg, #0f6e5c, #1cbc9b);
+            border: none;
+            padding: 0.9rem 2rem;
+            border-radius: 2rem;
+            font-weight: bold;
+            color: white;
+            font-size: 1.1rem;
+            cursor: pointer;
+            box-shadow: 0 5px 12px rgba(28, 188, 155, 0.3);
+            transition: 0.2s;
+        }
+
+        .book-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .message-area {
+            margin: 1rem 2rem 2rem 2rem;
+            text-align: center;
+            font-weight: 500;
+            padding: 0.8rem;
+            border-radius: 2rem;
+            background: rgba(0, 0, 0, 0.5);
+            color: #c3eaff;
+        }
+
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            font-size: 0.7rem;
+            color: #5f7f9e;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        @media (max-width: 760px) {
+            .input-group {
+                flex-direction: column;
+            }
+            .brand {
+                flex-direction: column;
+            }
+            .summary-flex {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="booking-container">
+    <div class="hero-header">
+        <div class="brand">
+            <div class="logo">
+                <h1>⛅ GlideGo</h1>
+                <p>luxury coach • smart travel</p>
+            </div>
+            <div class="tagline">
+                ✨ seamless booking | zero hassle
+            </div>
+        </div>
+    </div>
+
+    <div class="search-panel">
+        <div class="input-group">
+            <div class="field">
+                <label>📍 FROM</label>
+                <input type="text" id="fromCity" placeholder="e.g., New York" value="New York">
+            </div>
+            <div class="field">
+                <label>🎯 TO</label>
+                <input type="text" id="toCity" placeholder="e.g., Boston" value="Boston">
+            </div>
+            <div class="field">
+                <label>📅 TRAVEL DATE</label>
+                <input type="date" id="travelDate" value="2026-05-15">
+            </div>
+            <div class="field">
+                <label></label>
+                <button class="search-btn" id="searchBtn">⟳ FIND BUSES</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="results-section">
+        <div class="section-title">
+            <h2>✨ available coaches</h2>
+            <span style="font-size:0.8rem; color:#73c8ff;">click any card to select</span>
+        </div>
+        <div id="busListContainer" class="bus-grid">
+            <!-- dynamic bus cards injected here -->
+            <div style="text-align:center; grid-column:1/-1; padding:2rem; color:#a0c2e3;">loading luxury fleet...</div>
+        </div>
+
+        <div class="booking-summary" id="bookingSummary">
+            <div class="summary-flex">
+                <div class="selected-info">
+                    <span style="font-size:0.75rem; text-transform:uppercase; color:#6fd4ff;">your selection</span>
+                    <p id="selectedBusText">⚡ No bus selected yet</p>
+                </div>
+                <div class="passenger-control">
+                    <button id="decPassenger">−</button>
+                    <span id="passengerCount">1</span>
+                    <button id="incPassenger">+</button>
+                </div>
+                <button id="confirmBookingBtn" class="book-btn">✈️ CONFIRM & BOOK</button>
+            </div>
+        </div>
+    </div>
+    <div class="message-area" id="globalMessage">
+        ✨ Welcome to GlideGo — choose your journey
+    </div>
+    <footer>
+        © 2026 GlideGo | premium digital travel experience | eco-friendly fleet
+    </footer>
+</div>
+
+<script>
+    // ---------- PREDEFINED BUS DATABASE (unique routes & fares) ----------
+    const busDatabase = [
+        { id: 1, operator: "AeroLux", from: "New York", to: "Boston", departure: "07:30 AM", arrival: "11:00 AM", fare: 49, seats: 28, type: "Business+ WiFi" },
+        { id: 2, operator: "SilverLine", from: "New York", to: "Boston", departure: "10:15 AM", arrival: "01:45 PM", fare: 39, seats: 32, type: "Recliner + USB" },
+        { id: 3, operator: "JetStream", from: "New York", to: "Washington", departure: "08:00 AM", arrival: "12:30 PM", fare: 59, seats: 36, type: "Panoramic View" },
+        { id: 4, operator: "HarborConnect", from: "Boston", to: "New York", departure: "09:45 AM", arrival: "01:15 PM", fare: 45, seats: 30, type: "Quiet Zone" },
+        { id: 5, operator: "MapleCruiser", from: "Boston", to: "Philadelphia", departure: "11:20 AM", arrival: "03:10 PM", fare: 55, seats: 26, type: "Extra Legroom" },
+        { id: 6, operator: "FreedomLine", from: "Washington", to: "New York", departure: "06:50 AM", arrival: "10:20 AM", fare: 67, seats: 40, type: "Double Decker" },
+        { id: 7, operator: "Neptune Tours", from: "New York", to: "Philadelphia", departure: "02:15 PM", arrival: "05:15 PM", fare: 42, seats: 34, type: "Snacks included" },
+        { id: 8, operator: "CoastStar", from: "Philadelphia", to: "Boston", departure: "04:00 PM", arrival: "08:30 PM", fare: 72, seats: 28, type: "Premium leather" },
+        { id: 9, operator: "MetroGlide", from: "New York", to: "Boston", departure: "06:20 PM", arrival: "09:50 PM", fare: 38, seats: 38, type: "Budget Express" }
+    ];
+
+    // helper to get matching buses
+    function filterBuses(fromQuery, toQuery) {
+        if (!fromQuery || !toQuery) return [];
+        return busDatabase.filter(bus => bus.from.toLowerCase() === fromQuery.toLowerCase() && bus.to.toLowerCase() === toQuery.toLowerCase());
+    }
+
+    // Global state
+    let currentFilteredBuses = [];     // buses matching current search
+    let selectedBusId = null;           // id of bus selected
+    let passengerQuantity = 1;
+
+    // Dom elements
+    const fromInput = document.getElementById('fromCity');
+    const toInput = document.getElementById('toCity');
+    const dateInput = document.getElementById('travelDate');
+    const searchBtn = document.getElementById('searchBtn');
+    const busContainer = document.getElementById('busListContainer');
+    const selectedBusText = document.getElementById('selectedBusText');
+    const passengerSpan = document.getElementById('passengerCount');
+    const decPassengerBtn = document.getElementById('decPassenger');
+    const incPassengerBtn = document.getElementById('incPassenger');
+    const confirmBtn = document.getElementById('confirmBookingBtn');
+    const globalMsgDiv = document.getElementById('globalMessage');
+
+    // show message helper
+    function setMessage(msg, isError = false) {
+        globalMsgDiv.innerHTML = isError ? `⚠️ ${msg}` : `✨ ${msg}`;
+        globalMsgDiv.style.background = isError ? 'rgba(255,70,70,0.2)' : 'rgba(0,210,180,0.2)';
+        setTimeout(() => {
+            if (globalMsgDiv.innerHTML === `✨ ${msg}` || globalMsgDiv.innerHTML === `⚠️ ${msg}`) {
+                if(!isError) globalMsgDiv.style.background = 'rgba(0, 0, 0, 0.5)';
+            }
+        }, 2800);
+    }
+
+    // update passenger display
+    function updatePassengerUI() {
+        passengerSpan.innerText = passengerQuantity;
+        // re-render summary text accordingly
+        if (selectedBusId !== null) {
+            const selectedBus = currentFilteredBuses.find(b => b.id === selectedBusId);
+            if (selectedBus) {
+                const totalFare = selectedBus.fare * passengerQuantity;
+                selectedBusText.innerHTML = `<strong>${selectedBus.operator}</strong> · ${selectedBus.from} → ${selectedBus.to} · ${selectedBus.departure} · <span style="color:#ffd966;">$${totalFare} (${passengerQuantity} pax)</span>`;
+            } else {
+                selectedBusText.innerHTML = `⚡ No bus selected yet`;
+            }
+        } else {
+            if(selectedBusId === null) selectedBusText.innerHTML = `⚡ No bus selected yet`;
+        }
+    }
+
+    // render bus cards with selection highlight
+    function renderBusCards(buses) {
+        if (!buses.length) {
+            busContainer.innerHTML = `<div style="text-align:center; grid-column:1/-1; padding:2.5rem; background: rgba(0,0,0,0.3); border-radius:2rem; color:#adccf0;">🌟 No direct buses found for this route. Try different cities like New York → Boston, or adjust search. 🌟</div>`;
+            // reset selected bus because no bus
+            selectedBusId = null;
+            updatePassengerUI();
+            return;
+        }
+        busContainer.innerHTML = buses.map(bus => `
+            <div class="bus-card ${selectedBusId === bus.id ? 'selected' : ''}" data-id="${bus.id}">
+                <div class="bus-route">
+                    <span>${bus.from}</span>
+                    <span class="route-arrow">➡</span>
+                    <span>${bus.to}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span style="font-weight: bold; color:#c2e5ff;">${bus.operator}</span>
+                    <span class="seat-info">${bus.type}</span>
+                </div>
+                <div class="bus-details">
+                    <span>🕒 ${bus.departure} — ${bus.arrival}</span>
+                    <span>💺 ${bus.seats} seats</span>
+                </div>
+                <div class="fare">$${bus.fare}</div>
+                <div class="select-badge">${selectedBusId === bus.id ? '✓ currently selected' : 'click to select'}</div>
+            </div>
+        `).join('');
+
+        // attach event listeners dynamically to each bus card
+        document.querySelectorAll('.bus-card').forEach(card => {
+            card.addEventListener('click', (e) => {
+                // do not bubble if clicked on button? but we have no inner buttons
+                const busId = parseInt(card.getAttribute('data-id'));
+                const foundBus = buses.find(b => b.id === busId);
+                if (foundBus) {
+                    if (selectedBusId === busId) {
+                        // deselect if same? usually keep selection but we can allow toggling? but design: keep but ok.
+                        setMessage(`${foundBus.operator} remains selected`, false);
+                    }
+                    selectedBusId = busId;
+                    renderBusCards(currentFilteredBuses);  // re-render to reflect selected style
+                    updatePassengerUI(); // recalc total fare
+                    setMessage(`✅ ${foundBus.operator} selected · fare $${foundBus.fare} per person`, false);
+                }
+            });
+        });
+    }
+
+    // perform search and reset selection
+    function performSearch() {
+        const fromVal = fromInput.value.trim();
+        const toVal = toInput.value.trim();
+        const travelDateRaw = dateInput.value;
+        if (!fromVal || !toVal) {
+            setMessage("Please enter both departure and destination cities.", true);
+            return;
+        }
+        if (!travelDateRaw) {
+            setMessage("Please select a travel date.", true);
+            return;
+        }
+        const matched = filterBuses(fromVal, toVal);
+        currentFilteredBuses = matched;
+        // reset selected bus on new search
+        selectedBusId = null;
+        passengerQuantity = 1;
+        updatePassengerUI();
+        renderBusCards(currentFilteredBuses);
+        if (matched.length === 0) {
+            setMessage(`No routes from ${fromVal} to ${toVal} on this connection. Try NYC → Boston or other pairs.`, true);
+        } else {
+            setMessage(`Found ${matched.length} premium coach(es) for ${fromVal} → ${toVal} on ${travelDateRaw}. Pick your ride!`, false);
+        }
+    }
+
+    // booking confirmation logic
+    function confirmBooking() {
+        if (selectedBusId === null) {
+            setMessage("Please select a bus from the list to continue booking.", true);
+            return;
+        }
+        const selectedBus = currentFilteredBuses.find(b => b.id === selectedBusId);
+        if (!selectedBus) {
+            // fallback if somehow selection out of sync
+            setMessage("Selection expired, please re-search or select again.", true);
+            selectedBusId = null;
+            renderBusCards(currentFilteredBuses);
+            return;
+        }
+        const fromCity = selectedBus.from;
+        const toCity = selectedBus.to;
+        const travelDate = dateInput.value;
+        const totalCost = selectedBus.fare * passengerQuantity;
+        const passengerCount = passengerQuantity;
+        // create a random booking reference
+        const bookingRef = 'GLD' + Math.floor(Math.random() * 9000 + 1000) + '-' + String.fromCharCode(65 + Math.floor(Math.random() * 26));
+        
+        // unique modal-like success message
+        setMessage(`🎟️ BOOKING CONFIRMED! Ref: ${bookingRef} | ${fromCity} → ${toCity} | ${passengerCount} seat(s) | Total: $${totalCost} | Travel on ${travelDate}. Boarding pass will be emailed. ✨`, false);
+        
+        // OPTIONAL: display more details in an immersive way (update summary block highlight)
+        selectedBusText.innerHTML = `<strong>✅ BOOKED: ${selectedBus.operator}</strong> · ${fromCity} → ${toCity} · ${passengerCount} pax · Total $${totalCost} · Ref: ${bookingRef}`;
+        
+        // after booking, we do NOT clear selection but we can optionally disable additional booking? not required per spec, but keep UI great.
+        // but to avoid double booking spam we can show success; the user can rebook different bus later.
+        // For better UX we do not reset because they might want new trip. Provide small extra animation.
+        const summaryDiv = document.querySelector('.booking-summary');
+        summaryDiv.style.transition = '0.2s';
+        summaryDiv.style.boxShadow = '0 0 0 2px #1cbc9b';
+        setTimeout(() => { summaryDiv.style.boxShadow = ''; }, 600);
+    }
+
+    // Event handlers for passengers
+    decPassengerBtn.addEventListener('click', () => {
+        if (passengerQuantity > 1) {
+            passengerQuantity--;
+            updatePassengerUI();
+            if(selectedBusId !== null){
+                const selBus = currentFilteredBuses.find(b=>b.id===selectedBusId);
+                if(selBus) setMessage(`Passengers: ${passengerQuantity} · total fare $${selBus.fare * passengerQuantity}`, false);
+                else updatePassengerUI();
+            } else {
+                setMessage(`Passengers set to ${passengerQuantity}`, false);
+            }
+        } else {
+            setMessage("Minimum 1 passenger required", true);
+        }
+    });
+    
+    incPassengerBtn.addEventListener('click', () => {
+        if (passengerQuantity < 10) {
+            passengerQuantity++;
+            updatePassengerUI();
+            if(selectedBusId !== null){
+                const selBus = currentFilteredBuses.find(b=>b.id===selectedBusId);
+                if(selBus) setMessage(`Passengers: ${passengerQuantity} · total fare $${selBus.fare * passengerQuantity}`, false);
+                else updatePassengerUI();
+            } else {
+                setMessage(`Passengers set to ${passengerQuantity}`, false);
+            }
+        } else {
+            setMessage("Max 10 passengers per booking (group discount available)", true);
+        }
+    });
+
+    searchBtn.addEventListener('click', performSearch);
+    confirmBtn.addEventListener('click', confirmBooking);
+    
+    // initial load: set default date to tomorrow or today's meaningful
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate() + 1).padStart(2, '0');
+    if(!dateInput.value) dateInput.value = `${yyyy}-${mm}-${dd}`;
+    
+    // initial search default data (NY -> Boston)
+    fromInput.value = "New York";
+    toInput.value = "Boston";
+    // initial load matches
+    (function init() {
+        const initialFrom = fromInput.value.trim();
+        const initialTo = toInput.value.trim();
+        currentFilteredBuses = filterBuses(initialFrom, initialTo);
+        selectedBusId = null;
+        passengerQuantity = 1;
+        updatePassengerUI();
+        renderBusCards(currentFilteredBuses);
+        if(currentFilteredBuses.length) setMessage(`✨ ${currentFilteredBuses.length} luxury buses ready from New York to Boston. Select your ride!`, false);
+        else setMessage(`✨ Welcome! Try search "New York" to "Boston" or any other route.`, false);
+    })();
+    
+    // also if date changes, we just keep same bus list, but we can notify
+    dateInput.addEventListener('change', () => {
+        if(currentFilteredBuses.length) setMessage(`Travel date updated to ${dateInput.value}. Availability remains flexible.`, false);
+    });
+</script>
+</body>
+</html>
